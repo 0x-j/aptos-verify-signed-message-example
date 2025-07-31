@@ -14,31 +14,16 @@ export const RootHeader = () => {
                   fill="currentColor" 
                   viewBox="0 0 24 24"
                 >
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gradient group-hover:scale-105 transition-transform">
-                  Aptos MessageBoard
+                  Aptos Message Signer
                 </h1>
-                <p className="text-xs text-muted-foreground">Full Stack Demo</p>
+                <p className="text-xs text-muted-foreground">Sign & Verify</p>
               </div>
             </a>
-            
-            <nav className="hidden md:flex items-center gap-6">
-              <a
-                href="/"
-                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors hover:scale-105 transform duration-200"
-              >
-                Messages
-              </a>
-              <a
-                href="/analytics"
-                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors hover:scale-105 transform duration-200"
-              >
-                Analytics
-              </a>
-            </nav>
           </div>
           
           <div className="flex items-center gap-3">

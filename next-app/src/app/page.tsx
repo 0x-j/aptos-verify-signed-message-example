@@ -1,5 +1,4 @@
-import { MessageBoard } from "@/components/MessageBoard";
-import { CreateMessage } from "@/components/CreateMessage";
+import { MessageSigner } from "@/components/MessageSigner";
 
 export default function HomePage() {
   return (
@@ -7,31 +6,28 @@ export default function HomePage() {
       <section className="text-center py-12 mb-8">
         <div className="max-w-4xl mx-auto space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold text-gradient">
-            Decentralized Message Board
+            Aptos Message Signing
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Share your thoughts on the Aptos blockchain. Create, read, and interact with messages stored permanently on-chain.
+            Sign messages with your Aptos wallet and verify signatures on the server. Supports all signature types including Ed25519, Multi-Ed25519, Single Key, and Multi Key.
           </p>
           <div className="flex flex-wrap justify-center gap-2 pt-4">
             <span className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
-              Gasless Transactions
+              Ed25519 Support
             </span>
             <span className="px-3 py-1 bg-chart-2/10 text-chart-2 text-sm font-medium rounded-full">
-              On-Chain Storage
+              Aptos Connect
             </span>
             <span className="px-3 py-1 bg-chart-3/10 text-chart-3 text-sm font-medium rounded-full">
-              Real-time Updates
+              Multi-Signature
             </span>
           </div>
         </div>
       </section>
       
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <MessageBoard />
-        </div>
-        <div className="lg:col-span-1">
-          <CreateMessage />
+      <div className="flex justify-center">
+        <div className="w-full max-w-lg">
+          <MessageSigner />
         </div>
       </div>
     </div>

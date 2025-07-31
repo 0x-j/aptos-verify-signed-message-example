@@ -8,8 +8,6 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { PropsWithChildren } from "react";
 import { RootHeader } from "@/components/RootHeader";
-import { WrongNetworkAlert } from "@/components/WrongNetworkAlert";
-import { QueryProvider } from "@/components/providers/QueryProvider";
 import { RootFooter } from "@/components/RootFooter";
 
 const fontSans = FontSans({
@@ -18,8 +16,8 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "Aptos Full Stack Demo",
-  description: "A demo of a full stack app on Aptos",
+  title: "Aptos Message Signer",
+  description: "Sign messages with your Aptos wallet and verify signatures",
 };
 
 const RootLayout = ({ children }: PropsWithChildren) => {
@@ -37,11 +35,9 @@ const RootLayout = ({ children }: PropsWithChildren) => {
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>
-            <WalletProvider>
+          <WalletProvider>
               <div className="flex flex-col min-h-screen">
                 <RootHeader />
-                <WrongNetworkAlert />
                 <main className="flex-1">
                   <div className="container mx-auto px-6 py-8 max-w-6xl">
                     {children}
@@ -51,7 +47,6 @@ const RootLayout = ({ children }: PropsWithChildren) => {
                 <Toaster />
               </div>
             </WalletProvider>
-          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

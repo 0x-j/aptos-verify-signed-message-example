@@ -1,97 +1,108 @@
 "use server";
 
-import { getLastSuccessVersion } from "@/db/getLastSuccessVersion";
-import { GetMessageProps, getMessage } from "@/db/getMessage";
-import { GetMessagesProps, getMessages } from "@/db/getMessages";
-import { getUserStats, GetUserStatsProps } from "@/db/getUserStats";
-import { getAptosClient } from "@/lib/aptos";
-import { Message } from "@/lib/type/message";
-import { UserStat } from "@/lib/type/user_stats";
 import {
-  Account,
-  AccountAuthenticator,
+  Ed25519PublicKey,
+  Ed25519Signature,
+  AnyPublicKey,
+  AnySignature,
+  PublicKey,
+  Signature,
   Deserializer,
-  Ed25519PrivateKey,
-  PendingTransactionResponse,
-  PrivateKey,
-  PrivateKeyVariants,
-  SimpleTransaction,
+  AptosConfig,
 } from "@aptos-labs/ts-sdk";
 
-export const getMessagesOnServer = async ({
-  page,
-  limit,
-  sortedBy,
-  order,
-}: GetMessagesProps): Promise<{
-  messages: Message[];
-  total: number;
+type VerifySignedMessageProps = {
+  message: string;
+  signature: Uint8Array;
+  publicKey: string;
+  signatureType: string;
+};
+
+export const verifySignedMessage = async ({
+  message,
+  signature,
+  publicKey,
+  signatureType,
+}: VerifySignedMessageProps): Promise<{
+  verified: boolean;
+  error?: string;
 }> => {
-  return getMessages({ page, limit, sortedBy, order });
-};
+  try {
+    // Convert message to Uint8Array
+    const messageBytes = new TextEncoder().encode(message);
 
-export const getMessageOnServer = async ({
-  messageObjAddr,
-}: GetMessageProps): Promise<{
-  message: Message;
-}> => {
-  return getMessage({ messageObjAddr });
-};
+    // Convert Uint8Array signature to hex string
+    const signatureHex = Array.from(signature)
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
 
-export const getLastVersionOnServer = async (): Promise<number> => {
-  return getLastSuccessVersion();
-};
+    let pubKey: PublicKey;
+    let sig: Signature;
 
-export const getUserStatsOnServer = async ({
-  page,
-  limit,
-  sortedBy,
-  order,
-}: GetUserStatsProps): Promise<{
-  userStats: UserStat[];
-  total: number;
-}> => {
-  return getUserStats({ page, limit, sortedBy, order });
-};
+    // Create the appropriate public key and signature objects based on type
+    switch (signatureType) {
+      case "ed25519":
+        pubKey = new Ed25519PublicKey(publicKey);
+        sig = new Ed25519Signature(`0x${signatureHex}`);
+        break;
 
-type sponsorAndSubmitTxOnServerProps = {
-  transactionBytes: number[]; // representing Unit8Array
-  senderAuthenticatorBytes: number[]; // representing Unit8Array
-};
-export const sponsorAndSubmitTxOnServer = async ({
-  transactionBytes,
-  senderAuthenticatorBytes,
-}: sponsorAndSubmitTxOnServerProps) => {
-  const transaction = SimpleTransaction.deserialize(
-    new Deserializer(new Uint8Array(transactionBytes))
-  );
-  const senderAuthenticator = AccountAuthenticator.deserialize(
-    new Deserializer(new Uint8Array(senderAuthenticatorBytes))
-  );
+      case "multi_ed25519":
+      case "single_key":
+      case "multi_key":
+        // For complex signature types, deserialize using AnyPublicKey and AnySignature
+        // Convert hex strings to Uint8Array for deserialization
+        const pubKeyBytes = new Uint8Array(
+          publicKey.startsWith("0x")
+            ? publicKey
+                .slice(2)
+                .match(/.{2}/g)
+                ?.map((byte) => parseInt(byte, 16)) || []
+            : publicKey.match(/.{2}/g)?.map((byte) => parseInt(byte, 16)) || []
+        );
+        const sigBytes = new Uint8Array(signature);
 
-  const sponsor = Account.fromPrivateKey({
-    privateKey: new Ed25519PrivateKey(
-      PrivateKey.formatPrivateKey(
-        process.env.TX_SPONSOR_PRIVATE_KEY!,
-        PrivateKeyVariants.Ed25519
-      )
-    ),
-  });
+        pubKey = AnyPublicKey.deserialize(new Deserializer(pubKeyBytes));
+        sig = AnySignature.deserialize(new Deserializer(sigBytes));
+        break;
 
-  const feePayerAuthenticator = getAptosClient().transaction.signAsFeePayer({
-    signer: sponsor,
-    transaction,
-  });
+      default:
+        return {
+          verified: false,
+          error: `Unsupported signature type: ${signatureType}`,
+        };
+    }
 
-  return await getAptosClient()
-    .transaction.submit.simple({
-      transaction,
-      senderAuthenticator,
-      feePayerAuthenticator,
-    })
-    .then((tx: PendingTransactionResponse) =>
-      getAptosClient().waitForTransaction({
-        transactionHash: tx.hash,
-      })
-    );
+    // Verify the signature against the actual message
+    // Use async verification for keyless signatures, sync for others
+    let isValid: boolean;
+
+    if (signatureType === "single_key") {
+      // NOTE: "single_key" here actually refers to Keyless signatures (Aptos Connect)
+      // The SDK reports Keyless signatures as "single_key" type, though they're different concepts:
+      // - Keyless: Uses JWT tokens + ZK proofs (no traditional private keys)
+      // - Single Key: Uses one Ed25519/Secp256k1 key pair
+      // Keyless signatures require async verification due to potential network calls
+      isValid = await pubKey.verifySignatureAsync({
+        message: messageBytes,
+        signature: sig,
+        aptosConfig: new AptosConfig({}),
+      });
+    } else {
+      // Traditional cryptographic signatures use sync verification
+      isValid = pubKey.verifySignature({
+        message: messageBytes,
+        signature: sig,
+      });
+    }
+
+    return {
+      verified: isValid,
+    };
+  } catch (error) {
+    console.error("Error verifying signature:", error);
+    return {
+      verified: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 };
