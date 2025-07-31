@@ -5,7 +5,7 @@ export const RootFooter = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <a
-              href="https://github.com/0xaptosj/aptos-verify-signed-message-example/"
+              href="https://github.com/0x-j/aptos-verify-signed-message-example/"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
