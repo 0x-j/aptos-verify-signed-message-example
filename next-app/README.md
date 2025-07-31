@@ -2,38 +2,38 @@
 
 A Next.js application demonstrating message signing and verification across all Aptos signature types.
 
-## 📋 Prerequisites
+## Prerequisites
 
-- **Node.js** 18+ installed
-- **npm** or **yarn** package manager
-- An **Aptos wallet** (Petra, Nightly) or **Google account** for Aptos Connect
+- Node.js 18+ installed
+- npm or yarn package manager
+- An Aptos wallet (Petra, Nightly) or Google account for Aptos Connect
 
-## 🚀 Quick Start
+## Quick Start
 
-1. **Install dependencies**:
+1. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. **Start the development server**:
+2. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-3. **Open your browser** to [http://localhost:3000](http://localhost:3000)
+3. Open your browser to [http://localhost:3000](http://localhost:3000)
 
-4. **Connect a wallet** and start signing messages!
+4. Connect a wallet and start signing messages!
 
-## 🔧 Available Scripts
+## Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 
-## 🎯 How to Use
+## How to Use
 
 1. **Connect Wallet**: Click "Connect a Wallet" in the header
 2. **Choose Wallet Type**:
@@ -43,24 +43,15 @@ A Next.js application demonstrating message signing and verification across all 
 4. **Sign Message**: Click "Sign Message" button
 5. **View Results**: See signature verification in real-time
 
-## 🛠️ Key Components
+## Key Components
 
 ### `MessageSigner.tsx`
 
-Main component handling:
-
-- User input for messages
-- Wallet integration via `useWallet()` hook
-- Signature type detection with `getSignInPublicKeyScheme()`
-- Server-side verification via server actions
+Main component handling user input, wallet integration, and signature verification.
 
 ### `actions.ts` (Server Actions)
 
-Server-side verification logic:
-
-- Handles all signature types (Ed25519, Multi-Ed25519, Keyless, Multi-Key)
-- Uses appropriate sync/async verification methods
-- Returns detailed verification results
+Server-side verification logic that handles all signature types using appropriate sync/async verification methods.
 
 ### Wallet Integration
 
@@ -68,7 +59,7 @@ Server-side verification logic:
 - **WalletSelector**: Handles wallet connection UI
 - **Supported Wallets**: Petra, Nightly, Aptos Connect
 
-## 🔍 Technical Details
+## Technical Details
 
 ### Signature Type Handling
 
@@ -81,19 +72,12 @@ The app automatically detects and handles different signature types:
 
 ### Verification Process
 
-1. **Frontend**: Detects signature type using SDK
-2. **Server**: Creates appropriate public key and signature objects
-3. **Verification**: Uses sync or async verification based on type
-4. **Response**: Returns verification result with detailed information
+1. Frontend detects signature type using SDK
+2. Server creates appropriate public key and signature objects
+3. Uses sync or async verification based on type
+4. Returns verification result with detailed information
 
-## 🎨 Styling
-
-- **Framework**: Tailwind CSS with custom design system
-- **Components**: Radix UI primitives
-- **Theme**: Dark/light mode support via `next-themes`
-- **Design**: Modern glass morphism effects and gradients
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -108,23 +92,10 @@ src/
 │   ├── wallet/           # Wallet connection components
 │   └── ui/               # Reusable UI components
 └── lib/
-    ├── aptos.ts          # Aptos client configuration
     └── utils.ts          # Utility functions
 ```
 
-## 🌐 Environment Variables (Optional)
-
-Create a `.env.local` file for optional configuration:
-
-```bash
-# Network configuration (defaults to devnet)
-NEXT_PUBLIC_NETWORK=devnet
-
-# API key for enhanced performance (optional)
-NEXT_PUBLIC_APTOS_API_KEY=your_api_key_here
-```
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -140,7 +111,7 @@ If you see unexpected signature types:
 - **Aptos Connect**: Shows `single_key` (actually Keyless)
 - **Multi-sig wallets**: Should show `multi_ed25519` or `multi_key`
 
-## 📚 Learn More
+## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Aptos TypeScript SDK](https://github.com/aptos-labs/aptos-ts-sdk)
@@ -148,32 +119,12 @@ If you see unexpected signature types:
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Radix UI](https://www.radix-ui.com/docs)
 
-## 🚢 Deployment
-
-### Vercel (Recommended)
-
-1. Push code to GitHub
-2. Connect repository to [Vercel](https://vercel.com)
-3. Deploy automatically on every push
-
-### Other Platforms
+## Deployment
 
 The app can be deployed to any platform supporting Next.js:
 
-- Netlify
-- Railway
-- Digital Ocean
-- AWS Amplify
-
-## 🤝 Contributing
-
-Issues and pull requests are welcome! This demo is particularly useful for:
-
-- Testing different wallet integrations
-- Improving error handling
-- Adding new signature type support
-- Enhancing the user interface
-
----
-
-**Happy signing! 🔐**
+- **Vercel** (recommended): Connect GitHub repo and deploy automatically
+- **Netlify**
+- **Railway**
+- **Digital Ocean**
+- **AWS Amplify**

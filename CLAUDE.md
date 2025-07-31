@@ -73,7 +73,6 @@ This is a focused demonstration of message signing and verification across all A
 
 ### Configuration
 
-- **Aptos Client**: `next-app/src/lib/aptos.ts`
 - **Utils**: `next-app/src/lib/utils.ts`
 
 ## Technical Implementation
